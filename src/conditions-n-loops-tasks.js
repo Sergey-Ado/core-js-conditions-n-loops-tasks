@@ -393,8 +393,16 @@ function rotateMatrix(matrix) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  const temp = arr;
+  for (let i = 0; i < arr.length - 1; i += 1) {
+    let k = i;
+    for (let j = i + 1; j < arr.length; j += 1) if (temp[j] < temp[k]) k = j;
+
+    const x = temp[i];
+    temp[i] = temp[k];
+    temp[k] = x;
+  }
 }
 
 /**
@@ -414,8 +422,34 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function newPos(p, w) {
+  if (p % 2) return (p + 1) / 2;
+  return p / 2 + (w % 2 ? (w + 1) / 2 : w / 2);
+}
+
+function minIteration(w) {
+  let pos = newPos(2, w);
+  let res = 1;
+  while (pos !== 2) {
+    res += 1;
+    pos = newPos(pos, w);
+  }
+  return res;
+}
+
+function shuffleChar(str, iterations) {
+  let res = str;
+  const iter = iterations % minIteration(str.length);
+  for (let k = 0; k < iter; k += 1) {
+    let temp1 = '';
+    let temp2 = '';
+    for (let i = 0; i < res.length; i += 2) {
+      temp1 += res[i];
+      temp2 += res[i + 1] || '';
+    }
+    res = temp1 + temp2;
+  }
+  return res;
 }
 
 /**
@@ -435,8 +469,45 @@ function shuffleChar(/* str, iterations */) {
  * @param {number} number The source number
  * @returns {number} The nearest larger number, or original number if none exists.
  */
-function getNearestBigger(/* number */) {
-  throw new Error('Not implemented');
+function getNearestBigger(number) {
+  const arr0 = [];
+  let num = number;
+  while (num > 0) {
+    arr0[arr0.length] = num % 10;
+    num = (num - (num % 10)) / 10;
+  }
+  for (let i = 0; i < arr0.length / 2; i += 1) {
+    const x = arr0[i];
+    arr0[i] = arr0[arr0.length - i - 1];
+    arr0[arr0.length - i - 1] = x;
+  }
+
+  let i = arr0.length - 1;
+  const arr = [arr0[i]];
+  while (i > 0) {
+    if (arr0[i - 1] < arr[arr.length - 1]) break;
+    arr[arr.length] = arr0[i - 1];
+    sortByAsc(arr);
+    i -= 1;
+  }
+  const resArr = [];
+  for (let j = 0; j < i - 1; j += 1) resArr[resArr.length] = arr0[j];
+  for (let j = 0; j < arr.length; j += 1) {
+    if (arr[j] > arr0[i - 1]) {
+      const x = arr[j];
+      arr[j] = arr0[i - 1];
+      arr0[i - 1] = x;
+      break;
+    }
+  }
+  resArr[resArr.length] = arr0[i - 1];
+  for (let j = 0; j < arr.length; j += 1) resArr[resArr.length] = arr[j];
+
+  let res = 0;
+  for (let j = 0; j < resArr.length; j += 1)
+    res += resArr[j] * 10 ** (resArr.length - j - 1);
+
+  return res;
 }
 
 module.exports = {
