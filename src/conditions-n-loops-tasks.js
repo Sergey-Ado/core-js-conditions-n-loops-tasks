@@ -284,8 +284,15 @@ function isContainNumber(num, digit) {
  *  [2, 3, 9, 5] => 2       => 2 + 3 === 5 then balance element is 9 and its index = 2
  *  [1, 2, 3, 4, 5] => -1   => no balance element
  */
-function getBalanceIndex(/* arr */) {
-  throw new Error('Not implemented');
+function getBalanceIndex(arr) {
+  for (let i = 1; i < arr.length - 1; i += 1) {
+    let leftSum = 0;
+    let rightSum = 0;
+    for (let j = 0; j < i; j += 1) leftSum += arr[j];
+    for (let j = i + 1; j < arr.length; j += 1) rightSum += arr[j];
+    if (leftSum === rightSum) return i;
+  }
+  return -1;
 }
 
 /**
@@ -309,8 +316,41 @@ function getBalanceIndex(/* arr */) {
  *          [10, 9,  8,  7]
  *        ]
  */
-function getSpiralMatrix(/* size */) {
-  throw new Error('Not implemented');
+function getSpiralMatrix(size) {
+  const arr = Array(size);
+  for (let i = 0; i < size; i += 1) arr[i] = Array(size);
+  let indexDir = 0;
+  let coordI = 0;
+  let coordY = 0;
+  for (let i = 0; i < size ** 2; i += 1) {
+    arr[coordI][coordY] = i + 1;
+    switch (indexDir) {
+      case 0:
+        if (coordY === size - 1 || arr[coordI][coordY + 1] > 0) {
+          indexDir = 1;
+          coordI += 1;
+        } else coordY += 1;
+        break;
+      case 1:
+        if (coordI === size - 1 || arr[coordI + 1][coordY] > 0) {
+          indexDir = 2;
+          coordY -= 1;
+        } else coordI += 1;
+        break;
+      case 2:
+        if (coordY === 0 || arr[coordI][coordY - 1] > 0) {
+          indexDir = 3;
+          coordI -= 1;
+        } else coordY -= 1;
+        break;
+      default:
+        if (coordI === 0 || arr[coordI - 1][coordY] > 0) {
+          indexDir = 0;
+          coordY += 1;
+        } else coordI -= 1;
+    }
+  }
+  return arr;
 }
 
 /**
@@ -328,8 +368,15 @@ function getSpiralMatrix(/* size */) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const tempMatrix = matrix;
+  const size = tempMatrix.length;
+  const res = Array(size);
+  for (let i = 0; i < size; i += 1) res[i] = Array(size);
+  for (let i = 0; i < size; i += 1)
+    for (let j = 0; j < size; j += 1) res[i][j] = tempMatrix[size - j - 1][i];
+  for (let i = 0; i < size; i += 1)
+    for (let j = 0; j < size; j += 1) tempMatrix[i][j] = res[i][j];
 }
 
 /**
